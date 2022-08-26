@@ -1,6 +1,6 @@
 import { faSquare, faThLarge, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Room, RoomEvent, setLogLevel, VideoPresets } from 'livekit-client';
+import { Room, RoomEvent, setLogLevel, RoomOptions, VideoPresets } from 'livekit-client';
 import { DisplayContext, DisplayOptions, LiveKitRoom } from '@livekit/react-components';
 import { useState } from 'react';
 import 'react-aspect-ratio/aspect-ratio.css';
@@ -46,6 +46,30 @@ export const RoomPage = () => {
     });
   };
 
+  const preset = VideoPresets.h720.resolution
+  console.log(preset)
+  const roomOptions: RoomOptions = {
+    adaptiveStream: false,
+    dynacast: false,
+    publishDefaults: {
+      simulcast: false,
+    },
+    videoCaptureDefaults: {
+      // resolution: ,
+      facingMode: 'environment' ,
+      resolution: {
+        // @ts-ignore
+        height: undefined,
+        // @ts-ignore
+        width: undefined,
+        aspectRatio: undefined,
+        frameRate: undefined,
+      },
+    },
+  }
+
+  
+  console.log(roomOptions);
   return (
     <DisplayContext.Provider value={displayOptions}>
       <div className="roomContainer">
@@ -96,13 +120,7 @@ export const RoomPage = () => {
             room.on(RoomEvent.ParticipantDisconnected, () => onParticipantDisconnected(room));
             updateParticipantSize(room);
           }}
-          roomOptions={{
-            adaptiveStream: isSet(query, 'adaptiveStream'),
-            dynacast: isSet(query, 'dynacast'),
-            videoCaptureDefaults: {
-              resolution: VideoPresets.h720.resolution,
-            },
-          }}
+          roomOptions={roomOptions}
           onLeave={onLeave}
         />
       </div>
